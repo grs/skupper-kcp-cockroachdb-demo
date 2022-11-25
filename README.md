@@ -1,5 +1,9 @@
 # skupper-kcp-cockroachdb-demo
 
+Short video:
+
+https://github.com/grs/skupper-kcp-cockroachdb-demo/raw/main/kcp-skupper-cockroachdb-demo.mp4
+
 Non-transparent multi-cluster with skupper and kcp
 
 1. Configure clusters to run workloads on. These must be able to
