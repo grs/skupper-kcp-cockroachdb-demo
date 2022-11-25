@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+while ! /cockroach/cockroach init --insecure --host=cockroachdb-g1-0.cockroachdb-internal
+do
+  sleep 1
+done
+sleep 5
+/cockroach/cockroach sql --insecure --host=cockroachdb-public --execute="create database todo;"
+while true
+do
+  sleep
+done

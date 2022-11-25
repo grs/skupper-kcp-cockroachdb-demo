@@ -1,0 +1,5 @@
+FROM docker.io/cockroachdb/cockroach:latest-v21.1
+
+WORKDIR /usr/local/bin
+COPY dbinit .
+ENTRYPOINT ["/usr/local/bin/dbinit"]

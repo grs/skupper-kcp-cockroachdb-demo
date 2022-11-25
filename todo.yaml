@@ -1,0 +1,122 @@
+---
+apiVersion: "v1"
+kind: "ServiceAccount"
+metadata:
+  labels:
+    app.kubernetes.io/name: "todo-frontend"
+    app.kubernetes.io/version: "1.0.0"
+  name: "todo-frontend"
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  labels:
+    app.kubernetes.io/name: "todo-frontend"
+    app.kubernetes.io/version: "1.0.0"
+  name: "todo-frontend"
+spec:
+  ports:
+  - name: "http"
+    port: 8080
+    targetPort: 8080
+    protocol: "TCP"
+  selector:
+    app.kubernetes.io/name: "todo-frontend"
+    app.kubernetes.io/version: "1.0.0"
+  type: "LoadBalancer"
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  labels:
+    app.kubernetes.io/name: "todo-frontend"
+    app.kubernetes.io/version: "1.0.0"
+  name: "todo-frontend"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "todo-frontend"
+      app.kubernetes.io/version: "1.0.0"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "todo-frontend"
+        app.kubernetes.io/version: "1.0.0"
+    spec:
+      containers:
+      - env:
+        - name: "KUBERNETES_NAMESPACE"
+          valueFrom:
+            fieldRef:
+              fieldPath: "metadata.namespace"
+        image: "quay.io/rhdevelopers/todo-frontend:1.0.0"
+        imagePullPolicy: "Always"
+        name: "todo-frontend"
+        ports:
+        - containerPort: 8080
+          name: "http"
+          protocol: "TCP"
+      serviceAccount: "todo-frontend"
+---
+apiVersion: "v1"
+kind: "ServiceAccount"
+metadata:
+  labels:
+    app.kubernetes.io/name: "todo-backend"
+    app.kubernetes.io/version: "1.0.0"
+  name: "todo-backend"
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  labels:
+    app.kubernetes.io/name: "todo-backend"
+    app.kubernetes.io/version: "1.0.0"
+  name: "todo-backend"
+spec:
+  ports:
+  - name: "http"
+    port: 8080
+    targetPort: 8080
+    protocol: "TCP"
+  selector:
+    app.kubernetes.io/name: "todo-backend"
+    app.kubernetes.io/version: "1.0.0"
+  type: "ClusterIP"
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  labels:
+    app.kubernetes.io/name: "todo-backend"
+    app.kubernetes.io/version: "1.0.0"
+  name: "todo-backend"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "todo-backend"
+      app.kubernetes.io/version: "1.0.0"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "todo-backend"
+        app.kubernetes.io/version: "1.0.0"
+    spec:
+      containers:
+      - env:
+        - name: "KUBERNETES_NAMESPACE"
+          valueFrom:
+            fieldRef:
+              fieldPath: "metadata.namespace"
+        - name: "WORKER_CLOUD_ID"
+          value: "aws"
+        image: "quay.io/rhdevelopers/todo-backend:1.0.0"
+        imagePullPolicy: "Always"
+        name: "todo-backend"
+        ports:
+        - containerPort: 8080
+          name: "http"
+          protocol: "TCP"
+      serviceAccount: "todo-backend"
